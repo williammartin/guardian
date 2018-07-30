@@ -26,6 +26,8 @@ import (
 	cmsg "github.com/opencontainers/runc/libcontainer/utils"
 )
 
+var edSucks = true
+
 const MaxSocketDirPathLength = 80
 
 func main() {
@@ -97,6 +99,10 @@ func run() int {
 	if err := runcExecCmd.Start(); err != nil {
 		runcExitCodePipe.Write([]byte{2})
 		return 2
+	}
+
+	if edSucks {
+		return logAndExit("runc exec: exit status 1: exec failed: container_linux.go:348: starting container process caused \"process_linux.go:90: adding pid 1217022 to cgroups caused \"failed to write 1217022 to cgroup.procs: write /sys/fs/cgroup/cpu,cpuacct/garden/container-id/cgroup.procs: invalid argument\"")
 	}
 
 	var status syscall.WaitStatus
